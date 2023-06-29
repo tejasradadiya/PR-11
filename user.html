@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="./style1.css">
+    <link rel="stylesheet" href="./all.min.css">
+
+    <body>
+        <header class="position-sticky top-0 z-index">
+            <nav class="navbar navbar-expand-lg navbar-light bg-darkblue">
+              <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                  <div class="col-4 d-flex align-items-center nav-text ">
+                    <a class="navbar-brand text-white px-3 fs-2" href="#">
+                        <img  src="img/logo.png" alt="">
+                    </a>
+        
+                    <select class="selected border border-2 rounded-2 border-primary btn-darkblue text-light p-1">
+                      <option class="text-light">Material Dark</option>
+                      <option class="text-light">Light</option>
+                      <option class="text-light">Cosmic</option>
+                    </select>
+                  </div>
+        
+                  <div class="col-8 d-flex justify-content-end align-items-center">
+                    <ul class="navbar-nav d-flex align-items-center">
+                        <input class="p-2 m-3"type="text" placeholder="Search..">
+                        <img class="m-3" width="25px" src="img/menu.png" alt="">
+                        <img width="25px" src="img/notification.png " alt="">
+                        <li class="text-white px-3 border-left"><img src="img/avatar-1.jpeg" class="rounded-circle me-1" width="40"
+                            alt="">
+                         </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </nav>
+          </header>
+        
+          <section>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-2 p-0">
+                  <div class="scrollbar bg-black">
+                    <ul class="p-0"> 
+                    <li class="ps-3  py-3 ps-4 border1"><a href="dashboard.html" class="text-white"><i class="fa-solid fa-chart-line p-2"></i>dashboard</a></li>
+                      <li class="ps-3  py-3 ps-4 border1"><a href="user.html" class="text-white "><i class="fa-solid fa-users me-2 fs-4"></i>Admin/User</a></li>
+                    </ul>
+                    <button class="m-5" onclick="logout()">Logout</button>
+                  </div>
+            </div>
+
+
+            <div class="col-10 p-3">
+
+                <div class="conatiner">
+                    <div class="row">
+                        <table class="table text-bg-secondary table-secondary mt-3">
+                            <tr>
+                                <td>Name</td>
+                                <td>Email</td>
+                                <td>Password</td>
+                                <td>Role</td>
+                            </tr>
+                            <tbody id="record"></tbody>
+                        </table>   
+                    </div>
+                </div> 
+
+            </div>
+
+        </section>
+    </body>
+</html>
+
+<script text="javascript">
+     const changerole = (id) =>{
+        let user = JSON.parse(localStorage.getItem('register'));
+
+        let ans = user.filter((val)=>{
+            if(val.userid == id){
+                val.role = "admin"
+            }
+            return val;
+                
+        });
+        localStorage.setItem('register',JSON.stringify(ans)); 
+        viewdata();      
+    }
+    const viewdata = () =>{
+        var userdata = JSON.parse(localStorage.getItem('register'));
+        var login = JSON.parse(localStorage.getItem('checkUserLogin'));
+        var tbl = ""
+        if(login.role == "admin"){
+            userdata.map((val)=>{  
+                tbl += `
+                    <tr>
+                        <td>${val.name}</td>    
+                        <td>${val.email}</td>    
+                        <td>${val.password}</td>`   
+
+                        if (val.role == "admin") {
+                        tbl += `     <td>
+                                                <button onclick='adminBtn(${val.userid})' style='background : gray;color: white'>Admin</button>
+                                            </td>`
+                    } else {
+                        tbl += `     <td>
+                                                <button onclick='changerole(${val.userid})' style='background : red;color: white'>User</button>
+                                            </td>`
+                    }
+
+                    tbl += `                
+                                    </tr>
+                                `
+
+
+            });
+        }else{
+            tbl += `
+                <tr>
+                    <td>${login.name}</td>    
+                    <td>${login.email}</td>    
+                    <td>${login.password}</td>    
+                    <td>${login.role}</td>    
+                </tr>
+            `
+        }
+        document.getElementById('record').innerHTML = tbl;
+    }
+    viewdata();
+
+   
+    const adminBtn = (id) => {
+            let allUser = JSON.parse(localStorage.getItem('register'));
+            allUser.filter((val) => {
+                if (val.userid == id) {
+                    val.role = "user";
+                }
+                return val;
+            });
+            localStorage.setItem('register', JSON.stringify(allUser));
+            alert("Role successfully changed!!");
+            viewUser();
+        }
+    const logout = () =>{
+        window.location.href="index.html";
+        localStorage.removeItem('checkUserLogin')
+    }
+
+    
+
+</script>
